@@ -1,3 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
+from airforce.api.models import Mothership, Ship, CrewMember
+
+admin.register(Mothership, Ship, CrewMember)(admin.ModelAdmin)
