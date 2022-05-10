@@ -73,28 +73,17 @@ WSGI_APPLICATION = 'airforce.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-#
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': env("NAME"),
-#         'USER': env("USER"),
-#         'PASSWORD': env('PASSWORD'),
-#         'HOST': env('HOST'),
-#         'PORT': env('PORT'),
-#     },
-# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'airforce',
-        'USER': 'root',
-        'PASSWORD': 'password',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': env("NAME"),
+        'USER': env("USER"),
+        'PASSWORD': env('PASSWORD'),
+        'HOST': env('HOST'),
+        'PORT': env('PORT'),
     },
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
