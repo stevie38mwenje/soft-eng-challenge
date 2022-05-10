@@ -17,9 +17,6 @@ class ShipSerializer(serializers.ModelSerializer):
 
 
 class CrewSerializer(serializers.ModelSerializer):
-    @staticmethod
-    def get_crew_name(instance):
-        return instance.crew.name
 
     class Meta:
         model = models.CrewMember
