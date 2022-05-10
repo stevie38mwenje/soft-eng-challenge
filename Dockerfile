@@ -1,11 +1,25 @@
-FROM python:3
-
-ENV PYTHONUNBUFFERED 1
+FROM python:3.8-slim as builder
 
 WORKDIR /usr/src/app
 
-COPY poetry.lock pyproject.toml /usr/src/app/
+RUN pip install poetry
 
-RUN pip3 install poetry
+COPY pyproject.toml poetry.lock ./
 
-RUN poetry install
+RUN poetry export -f requirements.txt > requirements.txt
+
+
+FROM python:3.8-slim
+
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /usr/src/app
+
+COPY --from=builder /usr/src/app/requirements.txt .
+
+RUN pip install -r requirements.txt
+
+COPY . .
+
+EXPOSE 8000
+CMD [ "uvicorn", "main:app", "--host", "0.0.0.0" ]
