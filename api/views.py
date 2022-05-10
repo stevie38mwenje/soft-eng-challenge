@@ -1,15 +1,12 @@
-from django.shortcuts import render
-
 # Create your views here.
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, RetrieveDestroyAPIView, UpdateAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, RetrieveDestroyAPIView
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+from rest_framework.status import HTTP_200_OK
 from rest_framework.views import APIView
 
 from .models import Mothership, Ship, CrewMember, ShipCrew
 from .serializers import MothershipSerializer, ShipSerializer, CrewSerializer
-from .utils import swap
 
 
 class CreateMothership(APIView):
@@ -43,16 +40,16 @@ class CreateCrewMember(APIView):
 
 
 class SwapCrewMember(APIView):
+    queryset = CrewMember.objects.all()
 
-    def put(self, request):
-        from_ship = request.data['from_ship']
-        to_ship = request.data['to_ship']
-        name = request.data['crew']
-        crew_data = swap(from_ship, to_ship, name)
-        print("======")
-        print(crew_data)
-        crewserializer = CrewSerializer(crew_data)
-        return Response(crewserializer.data, status=status.HTTP_200_OK)
+    def put(self, request, *args, **kwargs):
+        crew = self.queryset.get(pk=kwargs["pk"])
+        serializer = CrewSerializer(crew, data=request.data)
+        if serializer.is_valid():
+            print(serializer)
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ListMothership(ListAPIView):

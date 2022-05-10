@@ -15,6 +15,6 @@ urlpatterns = [
     path('crew/add', CreateCrewMember.as_view()),
     path('ship/delete/<int:pk>', DeleteShip.as_view()),
     path('crew/assigntoship/<int:id>', AssignCrewMemberToShip.as_view()),
-    path('crewswap/', SwapCrewMember.as_view()),
+    path('crewswap/<int:pk>/', SwapCrewMember.as_view()),
 
 ]
