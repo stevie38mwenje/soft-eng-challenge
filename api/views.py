@@ -14,40 +14,21 @@ from .serializers import MothershipSerializer, ShipSerializer, CrewSerializer
 class CreateMothership(APIView):
 
     def post(self, request):
-        try:
-            mothershipSerializer = MothershipSerializer(data=request.data)
-            if mothershipSerializer.is_valid():
-                mothershipSerializer.save()
-                print("REQ:", mothershipSerializer.data)
-            else:
-                print("INVALID REQ:", mothershipSerializer.data)
-            return Response({"status": "Ok"}, status=HTTP_200_OK)
-        except:
-            return Response({"status": "fail"}, status=HTTP_400_BAD_REQUEST)
+        mothershipserializer = MothershipSerializer(data=request.data)
+        if mothershipserializer.is_valid():
+            mothershipserializer.save()
+            return Response(mothershipserializer.data, status=status.HTTP_201_CREATED)
+        return Response(mothershipserializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CreateShip(APIView):
-    # serializer_class = ShipSerializer
-    # queryset = Ship.objects.all()
 
     def post(self, request):
-        count = request.data.get('count')
-
-        if count:
-            count = int(count)
-            mothership_id = request.data.get('mothership')
-            ships = []
-            for i in range(count):
-                serializer = ShipSerializer(data={'mothership': mothership_id})
-                if serializer.is_valid():
-                    serializer.save()
-                    ships.append(serializer.data)
-            return Response(ships, status=status.HTTP_201_CREATED)
-        serializer = ShipSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        shipserializer = ShipSerializer(data=request.data)
+        if shipserializer.is_valid():
+            shipserializer.save()
+            return Response(shipserializer.data, status=status.HTTP_201_CREATED)
+        return Response(shipserializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CreateCrewMember(CreateAPIView):
