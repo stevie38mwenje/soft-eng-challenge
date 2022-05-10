@@ -22,8 +22,8 @@ Ships has Mana CrewMembers.
 - Poetry ^1.1.12
 - Django ^3.2.12
 ### Acceptance criteria
-- Given that the officer wants to add a mothership, when he adds a mothership, then the mothership will be created with three ships
-- Given that the mothership was created, when the ship is created, then ship will create three crew members
+~~- Given that the officer wants to add a mothership, when he adds a mothership, then the mothership will be created with three ships~~
+~~- Given that the mothership was created, when the ship is created, then ship will create three crew members~~
 - Given that the officer wants to add a ship to a mothership, when he sends which mother ship and how much ships he wants to add, then ships will be created with three crew members each one if the mothership contains less than 9 ships
 - Given that the officer wants to remove a ship, when he tries he send which ship he wants to remove, then the ship will be removed along with all its crew members
 - Given that the officer wants to add a crew member, when he sends the name of the member and the ship he wants to add, then the crew member is added if the ship contains less than 5 crew members

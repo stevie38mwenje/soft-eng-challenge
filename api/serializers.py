@@ -1,48 +1,29 @@
 from rest_framework import serializers
 
-from . import models, interface
+from . import models
 
 
-class MothershipSerializer(serializers.Serializer):
-    def update(self, instance, validated_data):
-        pass
-
-    def create(self, validated_data):
-        return interface.create_mothership()
-
+class MothershipSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Mothership
-        fields = '__all__'
+        fields = ('name',)
 
 
-class ShipSerializer(serializers.Serializer):
-    def update(self, instance, validated_data):
-        pass
-
-    def create(self, validated_data):
-        print(validated_data)
-        mothership_data = validated_data.pop('mothership')
-        return interface.create_ship(mothership_data)
+class ShipSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Ship
         fields = '__all__'
 
 
-class CrewSerializer(serializers.Serializer):
-    def update(self, instance, validated_data):
-        pass
-
-    def create(self, validated_data):
-        ship_data = validated_data.pop('ship')
-        return interface.create_ship(ship_data)
+class CrewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.CrewMember
         fields = '__all__'
 
 
-class ShipCrewSerializer(serializers.Serializer):
+class ShipCrewSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         pass
 

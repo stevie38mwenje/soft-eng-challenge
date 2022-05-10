@@ -4,21 +4,50 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK
+from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 
 from .models import Mothership, Ship, CrewMember, ShipCrew
 from .serializers import MothershipSerializer, ShipSerializer, CrewSerializer
 
 
-class CreateMothership(CreateAPIView):
-    serializer_class = MothershipSerializer
-    queryset = Mothership.objects.all()
+class CreateMothership(APIView):
+
+    def post(self, request):
+        try:
+            mothershipSerializer = MothershipSerializer(data=request.data)
+            if mothershipSerializer.is_valid():
+                mothershipSerializer.save()
+                print("REQ:", mothershipSerializer.data)
+            else:
+                print("INVALID REQ:", mothershipSerializer.data)
+            return Response({"status": "Ok"}, status=HTTP_200_OK)
+        except:
+            return Response({"status": "fail"}, status=HTTP_400_BAD_REQUEST)
 
 
-class CreateShip(CreateAPIView):
-    serializer_class = ShipSerializer
-    queryset = Ship.objects.all()
+class CreateShip(APIView):
+    # serializer_class = ShipSerializer
+    # queryset = Ship.objects.all()
+
+    def post(self, request):
+        count = request.data.get('count')
+
+        if count:
+            count = int(count)
+            mothership_id = request.data.get('mothership')
+            ships = []
+            for i in range(count):
+                serializer = ShipSerializer(data={'mothership': mothership_id})
+                if serializer.is_valid():
+                    serializer.save()
+                    ships.append(serializer.data)
+            return Response(ships, status=status.HTTP_201_CREATED)
+        serializer = ShipSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CreateCrewMember(CreateAPIView):

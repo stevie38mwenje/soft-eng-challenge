@@ -11,9 +11,6 @@ class Mothership(models.Model):
     def has_space(self, mothership=None):
         return self.capacity > Ship.objects.filter(mothership).count()
 
-    def __str__(self):
-        return 'NAME: {}'.format(self.name)
-
 
 class Ship(models.Model):
     name = models.CharField(max_length=255)
