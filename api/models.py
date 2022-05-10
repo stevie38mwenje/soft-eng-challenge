@@ -17,7 +17,7 @@ class Mothership(models.Model):
 
 class Ship(models.Model):
     name = models.CharField(max_length=255)
-    capacity = models.SmallIntegerField(default=9)
+    capacity = models.SmallIntegerField(default=5)
     mothership = models.ForeignKey(Mothership, on_delete=models.CASCADE)
 
     @property
