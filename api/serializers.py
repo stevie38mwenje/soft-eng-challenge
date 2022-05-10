@@ -20,6 +20,7 @@ class ShipSerializer(serializers.Serializer):
         pass
 
     def create(self, validated_data):
+        print(validated_data)
         mothership_data = validated_data.pop('mothership')
         return interface.create_ship(mothership_data)
 
