@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from human_airforce.airforce.api import models, interface
+from . import models, interface
 
 
 class MothershipSerializer(serializers.Serializer):

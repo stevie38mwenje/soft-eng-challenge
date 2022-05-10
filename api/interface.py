@@ -1,5 +1,5 @@
 # from human_airforce.airforce.api.models import Mothership, Ship ,CrewMember
-from airforce.api.models import Mothership, CrewMember, Ship
+from .models import Mothership, CrewMember, Ship
 
 
 def create_mothership():

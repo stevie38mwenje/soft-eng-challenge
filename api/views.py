@@ -6,8 +6,8 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
 from rest_framework.views import APIView
 
-from human_airforce.airforce.api.models import Mothership, Ship, CrewMember, ShipCrew
-from human_airforce.airforce.api.serializers import MothershipSerializer, ShipSerializer, CrewSerializer
+from .models import Mothership, Ship, CrewMember, ShipCrew
+from .serializers import MothershipSerializer, ShipSerializer, CrewSerializer
 
 
 class CreateMothership(CreateAPIView):
