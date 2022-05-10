@@ -17,6 +17,9 @@ class ShipSerializer(serializers.ModelSerializer):
 
 
 class CrewSerializer(serializers.ModelSerializer):
+    @staticmethod
+    def get_crew_name(instance):
+        return instance.crew.name
 
     class Meta:
         model = models.CrewMember
@@ -24,11 +27,6 @@ class CrewSerializer(serializers.ModelSerializer):
 
 
 class ShipCrewSerializer(serializers.ModelSerializer):
-    def update(self, instance, validated_data):
-        pass
-
-    def create(self, validated_data):
-        pass
 
     class Meta:
         model = models.ShipCrew

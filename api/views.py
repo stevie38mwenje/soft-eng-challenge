@@ -2,13 +2,14 @@ from django.shortcuts import render
 
 # Create your views here.
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, RetrieveDestroyAPIView, UpdateAPIView
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 
 from .models import Mothership, Ship, CrewMember, ShipCrew
 from .serializers import MothershipSerializer, ShipSerializer, CrewSerializer
+from .utils import swap
 
 
 class CreateMothership(APIView):
@@ -32,14 +33,26 @@ class CreateShip(APIView):
 
 
 class CreateCrewMember(APIView):
-    
+
     def post(self, request):
         crewserializer = CrewSerializer(data=request.data)
         if crewserializer.is_valid():
             crewserializer.save()
             return Response(crewserializer.data, status=status.HTTP_201_CREATED)
         return Response(crewserializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
+class SwapCrewMember(APIView):
+
+    def put(self, request):
+        from_ship = request.data['from_ship']
+        to_ship = request.data['to_ship']
+        name = request.data['crew']
+        crew_data = swap(from_ship, to_ship, name)
+        print("======")
+        print(crew_data)
+        crewserializer = CrewSerializer(crew_data)
+        return Response(crewserializer.data, status=status.HTTP_200_OK)
 
 
 class ListMothership(ListAPIView):
@@ -69,6 +82,11 @@ class ShipDetail(RetrieveAPIView):
 
 class CrewDetail(RetrieveAPIView):
     serializer_class = CrewSerializer
+    queryset = Ship.objects.all()
+
+
+class DeleteShip(RetrieveDestroyAPIView):
+    serializer_class = ShipSerializer
     queryset = Ship.objects.all()
 
 

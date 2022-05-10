@@ -34,5 +34,3 @@ class ShipCrew(models.Model):
     ship = models.ForeignKey(Ship, on_delete=models.CASCADE)
     crew = models.ForeignKey(CrewMember, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return 'NAME: {}'.format(self.ship,self.crew)

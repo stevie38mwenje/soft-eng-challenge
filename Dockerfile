@@ -1,25 +1,25 @@
-FROM python:3.8-slim as builder
-
-WORKDIR /usr/src/app
-
-RUN pip install poetry
-
-COPY pyproject.toml poetry.lock ./
-
-RUN poetry export -f requirements.txt > requirements.txt
-
-
-FROM python:3.8-slim
+FROM python:3.9-slim as os-base
 
 ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+RUN apt-get update
+RUN apt-get install -y curl
 
-WORKDIR /usr/src/app
+FROM os-base as poetry-base
 
-COPY --from=builder /usr/src/app/requirements.txt .
+RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+ENV PATH="/root/.poetry/bin:$PATH"
+RUN poetry config virtualenvs.create false
+RUN apt-get remove -y curl
 
-RUN pip install -r requirements.txt
+FROM poetry-base as app-base
 
-COPY . .
+ARG APPDIR=/app
+WORKDIR $APPDIR/
+COPY airforce ./airforce
+COPY /pyproject.toml /pyproject.toml
+RUN poetry install --no-dev
 
-EXPOSE 8000
-CMD [ "uvicorn", "main:app", "--host", "0.0.0.0" ]
+FROM app-base as main
+
+CMD tail -f /dev/null
