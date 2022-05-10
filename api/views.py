@@ -31,9 +31,15 @@ class CreateShip(APIView):
         return Response(shipserializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CreateCrewMember(CreateAPIView):
-    serializer_class = CrewSerializer
-    queryset = CrewMember.objects.all()
+class CreateCrewMember(APIView):
+    
+    def post(self, request):
+        crewserializer = CrewSerializer(data=request.data)
+        if crewserializer.is_valid():
+            crewserializer.save()
+            return Response(crewserializer.data, status=status.HTTP_201_CREATED)
+        return Response(crewserializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 
 
 class ListMothership(ListAPIView):
