@@ -1,5 +1,6 @@
 # Create your views here.
 from rest_framework import status
+from rest_framework.exceptions import ValidationError
 from rest_framework.generics import ListAPIView, RetrieveAPIView, RetrieveDestroyAPIView
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
@@ -7,6 +8,7 @@ from rest_framework.views import APIView
 
 from .models import Mothership, Ship, CrewMember, ShipCrew
 from .serializers import MothershipSerializer, ShipSerializer, CrewSerializer
+from .utils import create_ship
 
 
 class CreateMothership(APIView):
@@ -15,6 +17,11 @@ class CreateMothership(APIView):
         mothershipserializer = MothershipSerializer(data=request.data)
         if mothershipserializer.is_valid():
             mothershipserializer.save()
+            mothership = mothershipserializer
+            for i in range(3):
+                print("mothership data++++", mothership.data.get('id'))
+                mothership_id = mothership.data.get('id')
+                create_ship(mothership_id=mothership_id)
             return Response(mothershipserializer.data, status=status.HTTP_201_CREATED)
         return Response(mothershipserializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -46,9 +53,13 @@ class SwapCrewMember(APIView):
         crew = self.queryset.get(pk=kwargs["pk"])
         serializer = CrewSerializer(crew, data=request.data)
         if serializer.is_valid():
-            print(serializer)
-            serializer.save()
-            return Response(serializer.data)
+            print("=====")
+            ship = serializer.validated_data.pop('ship')
+            if ship.has_space:
+                serializer.save()
+                return Response(serializer.data)
+            else:
+                return ValidationError(detail='no space left')
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

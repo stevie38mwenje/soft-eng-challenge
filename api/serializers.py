@@ -6,7 +6,7 @@ from . import models
 class MothershipSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Mothership
-        fields = ('name',)
+        fields = '__all__'
 
 
 class ShipSerializer(serializers.ModelSerializer):
