@@ -34,7 +34,9 @@ class CreateShip(APIView):
             mothership = shipserializer.validated_data.get('mothership')
             print("mothershipdata....", mothership)
             mothership_count = Ship.objects.filter(mothership=mothership).count()
-            if mothership_count > 9:
+            mothership_capacity = mothership.capacity
+            print("mothership capacity.....", mothership_capacity)
+            if mothership_count > mothership_capacity:
                 raise ValidationError(detail='Not enough space in mothership')
             else:
                 shipserializer.save()
@@ -54,7 +56,9 @@ class CreateCrewMember(APIView):
         if crewserializer.is_valid():
             ship = crewserializer.validated_data.get('ship')
             ship_count = CrewMember.objects.filter(ship=ship).count()
-            if ship_count > 5:
+            ship_capacity = ship.capacity
+            print("ship capacity.....", ship_capacity)
+            if ship_count > ship_capacity:
                 print("ship count___", ship_count)
                 raise ValidationError(detail='Not enough space in ship')
             else:
