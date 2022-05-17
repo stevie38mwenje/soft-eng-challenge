@@ -1,6 +1,6 @@
 # Create your views here.
 from rest_framework import status
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError, APIException
 from rest_framework.generics import ListAPIView, RetrieveAPIView, RetrieveDestroyAPIView
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
@@ -86,14 +86,13 @@ class SwapCrewMember(APIView):
     #
     #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     def put(self, request):
+        print("req data", request.data)
         try:
             from_ship_id = request.data['from_ship']
             to_ship_id = request.data['to_ship']
             name = request.data['name']
-        except KeyError as e:
-            return Response(
-                {"status": "failed", "status_code": 1, "message": "Cannot swap crew", "error": str(e)},
-                status=HTTP_400_BAD_REQUEST)
+        except KeyError:
+            raise APIException()
         crew = swap_crew(from_ship_id, to_ship_id, name)
         serializer = CrewSerializer(crew)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
