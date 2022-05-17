@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
 from rest_framework.views import APIView
 
-from .models import Mothership, Ship, CrewMember, ShipCrew
+from .models import Mothership, Ship, CrewMember
 from .serializers import MothershipSerializer, ShipSerializer, CrewSerializer
 from .utils import create_ship, create_crew
 
@@ -119,16 +119,3 @@ class DeleteShip(RetrieveDestroyAPIView):
     queryset = Ship.objects.all()
 
 
-class AssignCrewMemberToShip(APIView):
-
-    def post(self, request, **kwargs):
-        try:
-            print("Request Data: ", request.data)
-            listmodels = []
-            for line in request.data:
-                model = ShipCrew(**line)
-                listmodels.append(model)
-            ShipCrew.objects.bulk_create(listmodels)
-        except Exception as e:
-            return Response({"status": "01", "message": "Unable to create crew members and assign to ship. " + repr(e)})
-        return Response(data=request.data, status=HTTP_200_OK)

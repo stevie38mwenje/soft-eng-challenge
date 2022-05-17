@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views import ListMothership, ListShip, ListCrewMember, MothershipDetail, ShipDetail, CrewDetail, CreateMothership, \
-    CreateShip, CreateCrewMember, AssignCrewMemberToShip, DeleteShip, SwapCrewMember
+    CreateShip, CreateCrewMember, DeleteShip, SwapCrewMember
 
 urlpatterns = [
     path('mothership/', ListMothership.as_view()),
@@ -14,7 +14,6 @@ urlpatterns = [
     path('ship/add', CreateShip.as_view()),
     path('crew/add', CreateCrewMember.as_view()),
     path('ship/delete/<int:pk>', DeleteShip.as_view()),
-    path('crew/assigntoship/<int:id>', AssignCrewMemberToShip.as_view()),
     path('crewswap/<int:pk>/', SwapCrewMember.as_view()),
 
 ]

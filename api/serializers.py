@@ -23,9 +23,3 @@ class CrewSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ShipCrewSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = models.ShipCrew
-        fields = '__all__'
-
