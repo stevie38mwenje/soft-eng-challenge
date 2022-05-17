@@ -38,11 +38,21 @@ class CreateShip(APIView):
 
 class CreateCrewMember(APIView):
 
+    # def has_space(self):
+    #     return Ship.self.capacity > CrewMember.objects.filter(ship=self).count()
+
     def post(self, request):
         crewserializer = CrewSerializer(data=request.data)
+
         if crewserializer.is_valid():
             crewserializer.save()
-            return Response(crewserializer.data, status=status.HTTP_201_CREATED)
+            ship = crewserializer.data.get('ship')
+            ship_count = CrewMember.objects.filter(ship=ship).count()
+            if ship_count > 5:
+                print("ship count___", ship_count)
+                raise ValidationError(detail='Not enough space in ship')
+            else:
+                return Response(crewserializer.data, status=status.HTTP_201_CREATED)
         return Response(crewserializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
