@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 
 from .models import Mothership, Ship, CrewMember, ShipCrew
 from .serializers import MothershipSerializer, ShipSerializer, CrewSerializer
-from .utils import create_ship
+from .utils import create_ship, create_crew
 
 
 class CreateMothership(APIView):
@@ -32,14 +32,21 @@ class CreateShip(APIView):
         shipserializer = ShipSerializer(data=request.data)
         if shipserializer.is_valid():
             shipserializer.save()
-            return Response(shipserializer.data, status=status.HTTP_201_CREATED)
+            mothership = shipserializer.data.get('mothership')
+            print("mothershipdata....", mothership)
+            mothership_count = Ship.objects.filter(mothership=mothership).count()
+            if mothership_count > 9:
+                raise ValidationError(detail='Not enough space in mothership')
+            else:
+                for i in range(3):
+                    print("ship data++++", shipserializer.data.get('id'))
+                    ship_id = shipserializer.data.get('id')
+                    create_crew(ship_id=ship_id)
+                return Response(shipserializer.data, status=status.HTTP_201_CREATED)
         return Response(shipserializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CreateCrewMember(APIView):
-
-    # def has_space(self):
-    #     return Ship.self.capacity > CrewMember.objects.filter(ship=self).count()
 
     def post(self, request):
         crewserializer = CrewSerializer(data=request.data)
