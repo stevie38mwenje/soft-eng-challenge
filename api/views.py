@@ -73,10 +73,10 @@ class SwapCrewMember(APIView):
         try:
             from_ship_id = request.data['from_ship']
             to_ship_id = request.data['to_ship']
-            name = request.data['name']
+            crew_id = request.data['crew_id']
         except KeyError:
             raise APIException()
-        crew = swap_crew(from_ship_id, to_ship_id, name)
+        crew = swap_crew(from_ship_id, to_ship_id, crew_id=crew_id)
         serializer = CrewSerializer(crew)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
