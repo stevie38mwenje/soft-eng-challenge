@@ -3,12 +3,12 @@ from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import ListAPIView, RetrieveAPIView, RetrieveDestroyAPIView
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK
+from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 
 from .models import Mothership, Ship, CrewMember
 from .serializers import MothershipSerializer, ShipSerializer, CrewSerializer
-from .utils import create_ship, create_crew
+from .utils import create_ship, create_crew, swap_crew
 
 
 class CreateMothership(APIView):
@@ -68,20 +68,35 @@ class CreateCrewMember(APIView):
 
 
 class SwapCrewMember(APIView):
-    queryset = CrewMember.objects.all()
+    # queryset = CrewMember.objects.all()
 
-    def put(self, request, *args, **kwargs):
-        crew = self.queryset.get(pk=kwargs["pk"])
-        serializer = CrewSerializer(crew, data=request.data)
-        if serializer.is_valid():
-            print("=====")
-            ship = serializer.validated_data.pop('ship')
-            if ship.has_space:
-                serializer.save()
-                return Response(serializer.data)
-            else:
-                return ValidationError(detail='no space left')
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # def put(self, request, *args, **kwargs):
+    #     crew = self.queryset.get(pk=kwargs["pk"])
+    #     serializer = CrewSerializer(crew, data=request.data)
+    #     if serializer.is_valid():
+    #         print("=====")
+    #         ship = serializer.validated_data.pop('ship')
+    #         ship_count = CrewMember.objects.filter(ship=ship).count()
+    #         ship_capacity = ship.capacity
+    #         if ship_count > ship_capacity:
+    #             return ValidationError(detail='no space left')
+    #         else:
+    #             serializer.save()
+    #             return Response(serializer.data,status=status.HTTP_200_OK)
+    #
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def put(self, request):
+        try:
+            from_ship_id = request.data['from_ship']
+            to_ship_id = request.data['to_ship']
+            name = request.data['name']
+        except KeyError as e:
+            return Response(
+                {"status": "failed", "status_code": 1, "message": "Cannot swap crew", "error": str(e)},
+                status=HTTP_400_BAD_REQUEST)
+        crew = swap_crew(from_ship_id, to_ship_id, name)
+        serializer = CrewSerializer(crew)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
 
 class ListMothership(ListAPIView):
@@ -117,5 +132,3 @@ class CrewDetail(RetrieveAPIView):
 class DeleteShip(RetrieveDestroyAPIView):
     serializer_class = ShipSerializer
     queryset = Ship.objects.all()
-
-
