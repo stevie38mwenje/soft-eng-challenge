@@ -68,23 +68,6 @@ class CreateCrewMember(APIView):
 
 
 class SwapCrewMember(APIView):
-    # queryset = CrewMember.objects.all()
-
-    # def put(self, request, *args, **kwargs):
-    #     crew = self.queryset.get(pk=kwargs["pk"])
-    #     serializer = CrewSerializer(crew, data=request.data)
-    #     if serializer.is_valid():
-    #         print("=====")
-    #         ship = serializer.validated_data.pop('ship')
-    #         ship_count = CrewMember.objects.filter(ship=ship).count()
-    #         ship_capacity = ship.capacity
-    #         if ship_count > ship_capacity:
-    #             return ValidationError(detail='no space left')
-    #         else:
-    #             serializer.save()
-    #             return Response(serializer.data,status=status.HTTP_200_OK)
-    #
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     def put(self, request):
         print("req data", request.data)
         try:
