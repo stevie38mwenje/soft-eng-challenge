@@ -31,13 +31,13 @@ class CreateShip(APIView):
     def post(self, request):
         shipserializer = ShipSerializer(data=request.data)
         if shipserializer.is_valid():
-            shipserializer.save()
-            mothership = shipserializer.data.get('mothership')
+            mothership = shipserializer.validated_data.get('mothership')
             print("mothershipdata....", mothership)
             mothership_count = Ship.objects.filter(mothership=mothership).count()
             if mothership_count > 9:
                 raise ValidationError(detail='Not enough space in mothership')
             else:
+                shipserializer.save()
                 for i in range(3):
                     print("ship data++++", shipserializer.data.get('id'))
                     ship_id = shipserializer.data.get('id')
@@ -52,13 +52,13 @@ class CreateCrewMember(APIView):
         crewserializer = CrewSerializer(data=request.data)
 
         if crewserializer.is_valid():
-            crewserializer.save()
-            ship = crewserializer.data.get('ship')
+            ship = crewserializer.validated_data.get('ship')
             ship_count = CrewMember.objects.filter(ship=ship).count()
             if ship_count > 5:
                 print("ship count___", ship_count)
                 raise ValidationError(detail='Not enough space in ship')
             else:
+                crewserializer.save()
                 return Response(crewserializer.data, status=status.HTTP_201_CREATED)
         return Response(crewserializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
