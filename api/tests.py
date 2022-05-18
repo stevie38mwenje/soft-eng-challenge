@@ -94,3 +94,10 @@ class TestCrewMember(APITestCase):
         response = self.client.delete(reverse("crew", kwargs={'id': res.data['id']}))
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_swap_crew(self):
+        from_ship = self.mothership['ships'][0]
+        to_ship = self.mothership['ships'][1]
+        crew = self.client.post(reverse('crewswap'), {'ship': from_ship['id']}).data
+        response = self.client.put(reverse('crew_list'), {'from_ship': from_ship['id'], 'to_ship': to_ship['id'], })
+        self.assertEqual(response.data['ship'], to_ship['id'])
