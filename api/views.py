@@ -3,7 +3,6 @@ from rest_framework import status
 from rest_framework.exceptions import ValidationError, APIException
 from rest_framework.generics import ListAPIView, RetrieveAPIView, RetrieveDestroyAPIView
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 
 from .models import Mothership, Ship, CrewMember
